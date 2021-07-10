@@ -1,0 +1,49 @@
+
+.header{
+    height: 100vh;
+
+
+}
+.navbar-style{
+    box-shadow: 0 5px 10px #efefef;
+}
+.mynavbar {
+    background-color: #4b53bc;
+    
+}
+.nav-link{
+    color: white;
+}
+
+a, a:hover, a:focus, a:active{
+    color: inherit;
+    color: white;
+}
+.nav-brand{
+    color: white;
+}
+.navbar-custom .a{
+    color: white;
+}
+.fa-microsoft{
+    padding-left: 10px;
+    color: white;
+    padding-right: 5px;
+}
+.icon_bar{
+    background-color: white;
+}
+.btn{
+    background-color: #4b53bc;
+    color: white;
+    height: 50px;
+}
+.img{
+    width: 100%;
+    height: 100%;
+    margin: 10px auto;
+}
+.imageVideo{
+    height: 100%;
+    width: 100%;
+}
