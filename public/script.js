@@ -2,18 +2,22 @@ const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer(undefined)
 let myVideoStream;
+
 let user = sessionStorage.getItem('username');
 if (user === null) {
     user = prompt("Please Enter your name");
 }
 
 if (user != null) {
-      
+    //storing username in session storage so that the prompt doesn't appear everytime when we reload the page
     sessionStorage.setItem('username', user);
 }
+//variable to toggle chat in and out of the meeting display
+//it is marked true because it will be displayed initially
 let isChatVisible = true;
+//html element to display the video of the meeting host
 const myVideo = document.createElement('video')
-myVideo.muted = true;
+myVideo.muted = true; //by default the host will be muted when he/she enters the meeting
 const peers = {}
 navigator.mediaDevices.getUserMedia({
   video: true,
@@ -28,7 +32,7 @@ navigator.mediaDevices.getUserMedia({
       addVideoStream(video, userVideoStream)
     })
   })
-
+  //adding a new user to the stream, making him join the meeting
   socket.on('user-connected', userId => {
     joinNewUser(userId, stream)
   })
@@ -47,7 +51,7 @@ navigator.mediaDevices.getUserMedia({
   })
  
 })
-
+// when the user disconnects from the stream
 socket.on('user-disconnected', userId => {
   if (peers[userId]) peers[userId].close()
 })
@@ -55,7 +59,7 @@ socket.on('user-disconnected', userId => {
 myPeer.on('open', id => {
   socket.emit('join-room', ROOM_ID, id, user)
 })
-
+// function invoked to connect a new user in our stream
 function joinNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
@@ -63,39 +67,43 @@ function joinNewUser(userId, stream) {
     addVideoStream(video, userVideoStream)
   })
   call.on('close', () => {
+    //to remove the video of the user whenever he/she disconnects from the meeting or leaves the meeting
     video.remove()
   })
 
   peers[userId] = call
 }
-
+// function made to add video to the meeting of the user
 function addVideoStream(video, stream) {
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
   })
+  //append the video in the display of meeting
   videoGrid.append(video)
 }
 
 
-
+// for scrolling in the chat box
 const scrollToBottom = () => {
   var d = $('.main__chat_window');
   d.scrollTop(d.prop("scrollHeight"));
 }
 
-
+// helps in adding the functionality of muting and unmuting the user
 const muteUnmute = () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getAudioTracks()[0].enabled = false;
+    //unmute the user
     unMuteUser();
   } else {
+    //mute the user
     muteUser();
     myVideoStream.getAudioTracks()[0].enabled = true;
   }
 }
-
+// helps in adding the functionality of stopping the video 
 const playStop = () => {
   console.log('object')
   let enabled = myVideoStream.getVideoTracks()[0].enabled;
@@ -139,11 +147,11 @@ const playUserVideo = () => {
   `
   document.querySelector('.main__video_button').innerHTML = html;
 }
-
+// function called when person leaves the meeting
 const leaveMeeting = () =>{
   location.replace("/")
 }
-
+// for toggling the chat
 const toggleChat = () =>{
   
   var right_box = document.getElementsByClassName("screen_right");

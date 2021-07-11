@@ -1,24 +1,24 @@
-  
+  //requiring packages
 const express = require('express')
 const app = express()
-// const cors = require('cors')
-// app.use(cors())
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const { ExpressPeerServer } = require('peer');
 const peerServer = ExpressPeerServer(server, {
   debug: true
 });
+//unique id
 const { v4: uuidV4 } = require('uuid')
 
 app.use('/peerjs', peerServer);
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
-
+//ROUTES
 app.get('/', (req, res) => {
   res.render('landing')
 })
+
 app.get('/meet', (req, res) => {
   res.redirect(`/${uuidV4()}`)
 })
